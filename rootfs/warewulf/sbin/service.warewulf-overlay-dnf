@@ -1,0 +1,67 @@
+#!/usr/bin/env python3
+
+# Author: griznog
+# Purpose: Configure/setup dnf and install additional packages based on node
+#          role as defined by {{ .Tags.role }}
+
+import os, os.path, sys, subprocess, socket
+import yaml, json
+
+# Define some locations of interest
+logfile_path = '/tmp/warewulf-overlay-packages.log'
+pkgconfig_file_path = '/warewulf/etc/packages.yaml'
+nodeconfig_file_path = '/warewulf/etc/node.yaml'
+
+# Read/parse config to get the configured overlays for this node.
+def read_config(config_file):
+    # Read node config file
+    with open(config_file) as f:
+        config_data = yaml.load(f)
+    return config_data
+
+
+# Wrapper for calling dnf
+def dnf_install(packages):
+    return subprocess.getstatusoutput('dnf -y --quiet install %s' % ' '.join(packages))
+
+
+# Main
+if __name__ == '__main__':
+    
+    # Read our configs.
+    pkgconfig = read_config(pkgconfig_file_path)
+    nodeconfig = read_config(nodeconfig_file_path)['nodeconfig']
+
+    # Get short hostname.
+    host = socket.gethostname().split('.')[0]
+
+    dnf_roles = nodeconfig['dnf roles'].split(',')
+    
+    groups = []
+    for role in dnf_roles:
+        try:
+            groups.extend(pkgconfig['roles'][role])
+        except KeyError:
+            print("Role %s not found in available roles: %s" % (role, ','.join(pkgconfig['roles'].keys())))
+            continue
+
+    # Make list a unique list.
+    groups = list(set(groups))
+
+    globalstatus = 0
+    for group in groups:
+        status, output = dnf_install(pkgconfig['groups'][group])
+        globalstatus += int(status)
+        if status > 0:
+            print("Error installing group %s." % group)
+            print(output)
+        else:
+            print("Group %s installed." % group)
+
+    # Create a file to use in the NHC check for success.
+    with open("/warewulf/var/state/config-dnf.status", 'w') as f:
+        if globalstatus == 0:
+            f.write('success\n')
+        else:
+            f.write('failure\n')
+

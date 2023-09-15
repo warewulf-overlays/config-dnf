@@ -1,0 +1,7 @@
+#!/bin/sh
+#
+# Empty file to overwrite the cron job the google-chorome rpm installs. For some 
+# reason Google hired someone stupid enough to think that a cron job which quietly 
+# adds a repo to the dnf config every day was a good idea. At least they've stopped
+# adding a recurring at batch job. Baby steps.
+exit 0

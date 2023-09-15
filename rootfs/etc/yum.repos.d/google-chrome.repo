@@ -1,0 +1,4 @@
+# We put this empty file here to overwrite the one the google-chrome rpm
+# puts here on every update or from cron.daily. The google-chrome repo is
+# already in our local mirror so we don't need this help. So thanks, Google, 
+# for being dumbasses about how you manage the yum repo for Chrome. 

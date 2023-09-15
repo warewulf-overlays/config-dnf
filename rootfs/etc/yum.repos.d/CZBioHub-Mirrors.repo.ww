@@ -1,0 +1,213 @@
+############################################################################
+# Upstream Rocky 8
+
+[appstream]
+name=Rocky Linux $releasever - AppStream
+baseurl=http://frankie/mirrors-{{ .ContainerName }}/appstream
+gpgcheck=1
+enabled=1
+countme=1
+gpgkey=http://frankie/rpm-gpg/RPM-GPG-KEY-rockyofficial
+
+[baseos]
+name=Rocky Linux $releasever - BaseOS
+baseurl=http://frankie/mirrors-{{ .ContainerName }}/baseos
+gpgcheck=1
+enabled=1
+countme=1
+gpgkey=http://frankie/rpm-gpg/RPM-GPG-KEY-rockyofficial
+
+[devel]
+name=Rocky Linux $releasever - Devel WARNING! FOR BUILDROOT AND KOJI USE
+baseurl=http://frankie/mirrors-{{ .ContainerName }}/devel
+gpgcheck=1
+enabled=0
+countme=1
+gpgkey=http://frankie/rpm-gpg/RPM-GPG-KEY-rockyofficial
+
+[extras]
+name=Rocky Linux $releasever - Extras
+baseurl=http://frankie/mirrors-{{ .ContainerName }}/extras
+gpgcheck=1
+enabled=1
+countme=1
+gpgkey=http://frankie/rpm-gpg/RPM-GPG-KEY-rockyofficial
+
+[plus]
+name=Rocky Linux $releasever - Plus
+baseurl=http://frankie/mirrors-{{ .ContainerName }}/plus
+gpgcheck=1
+enabled=0
+countme=1
+gpgkey=http://frankie/rpm-gpg/RPM-GPG-KEY-rockyofficial
+
+[powertools]
+name=Rocky Linux $releasever - PowerTools
+baseurl=http://frankie/mirrors-{{ .ContainerName }}/powertools
+gpgcheck=1
+enabled=1
+countme=1
+gpgkey=http://frankie/rpm-gpg/RPM-GPG-KEY-rockyofficial
+
+[resilient-storage]
+name=Rocky Linux $releasever - ResilientStorage
+baseurl=http://frankie/mirrors-{{ .ContainerName }}/resilient-storage
+gpgcheck=1
+enabled=0
+countme=1
+gpgkey=http://frankie/rpm-gpg/RPM-GPG-KEY-rockyofficial
+
+[rt]
+name=Rocky Linux $releasever - Realtime
+baseurl=http://frankie/mirrors-{{ .ContainerName }}/rt
+gpgcheck=1
+enabled=0
+countme=1
+gpgkey=http://frankie/rpm-gpg/RPM-GPG-KEY-rockyofficial
+
+################################################################################
+# EPEL Repos
+[epel]
+name=Extra Packages for Enterprise Linux $releasever - $basearch
+baseurl=http://frankie/mirrors-{{ .ContainerName }}/epel
+enabled=1
+gpgcheck=1
+countme=1
+gpgkey=http://frankie/rpm-gpg/RPM-GPG-KEY-EPEL-8
+
+[epel-modular]
+name=Extra Packages for Enterprise Linux Modular $releasever - $basearch
+baseurl=http://frankie/mirrors-{{ .ContainerName }}/epel-modular
+enabled=1
+gpgcheck=1
+countme=1
+gpgkey=http://frankie/rpm-gpg/RPM-GPG-KEY-EPEL-8
+
+[epel-testing]
+name=Extra Packages for Enterprise Linux $releasever - Testing - $basearch
+baseurl=http://frankie/mirrors-{{ .ContainerName }}/epel-testing
+enabled=0
+gpgcheck=1
+countme=1
+gpgkey=http://frankie/rpm-gpg/RPM-GPG-KEY-EPEL-8
+
+################################################################################
+# RPM Fusion
+[rpmfusion-free-updates]
+name=RPM Fusion for EL 8 - Free - Updates
+baseurl=http://frankie/mirrors-{{ .ContainerName }}/rpmfusion-free-updates
+enabled=1
+gpgcheck=1
+countme=1
+gpgkey=http://frankie/rpm-gpg/RPM-GPG-KEY-rpmfusion-free-el-8
+
+################################################################################
+# Neo4j repos, only used on neo4j host
+[neo4j]
+name=Neo4j Graph Database Repo
+baseurl=http://frankie/mirrors-{{ .ContainerName }}/neo4j
+enabled=0
+gpgcheck=0
+
+################################################################################
+# nVidia CUDA drivers.
+[cuda-rhel8-x86_64]
+name=nVidia CUDA
+baseurl=http://frankie/mirrors-{{ .ContainerName }}/cuda-rhel8-x86_64
+enabled=1
+gpgcheck=0
+
+################################################################################
+# Microsoft Repos and Tools
+[code]
+name=Visual Studio Code
+baseurl=http://frankie/mirrors-{{ .ContainerName }}/code
+enabled=1
+gpgcheck=0
+
+################################################################################
+# CZBioHub Local Repos
+[czbiohub]
+name=CZBioHub Miscellaneous Local Packages
+baseurl=http://frankie/mirrors-{{ .ContainerName }}/czbiohub
+enabled=1
+gpgcheck=0
+
+[lustre]
+name=CZBioHub custom local Lustre Client
+baseurl=http://frankie/mirrors-{{ .ContainerName }}/lustre
+enabled=1
+gpgcheck=0
+
+################################################################################
+# DUO Mobile 2FA upstream repo mirror
+[duosecurity]
+name=Duo Security Repository
+baseurl=http://frankie/mirrors-{{ .ContainerName }}/duosecurity
+enabled=1
+gpgcheck=1
+
+################################################################################
+# Github CLI upstream repo mirror.
+[gh-cli]
+name=Github Client
+baseurl=http://frankie/mirrors-{{ .ContainerName }}/gh-cli
+enabled=1
+gpgcheck=1
+gpgkey=https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x23F3D4EA75716059
+
+################################################################################
+# Globus Connect Server upstream repo mirror.
+[Globus-Connect-Server-5-Stable]
+name=Globus Connect Server 5 Stable
+baseurl=http://frankie/mirrors-{{ .ContainerName }}/Globus-Connect-Server-5-Stable
+enabled=1
+gpgcheck=0
+
+################################################################################
+# Google Chrome upstream repo mirror.
+[google-chrome]
+name=google-chrome
+baseurl=http://frankie/mirrors-{{ .ContainerName }}/google-chrome
+enabled=1
+gpgcheck=1
+gpgkey=https://dl.google.com/linux/linux_signing_key.pub
+
+[google-cloud-sdk]
+name=google-cloud-sdk
+baseurl=http://frankie/mirrors-{{ .ContainerName }}/google-cloud-sdk
+enabled=1
+gpgcheck=1
+gpgkey=https://dl.google.com/linux/linux_signing_key.pub
+
+################################################################################
+# TurboVNC and VirtualGL upstream repo mirrors-{{ .ContainerName }}.
+[TurboVNC]
+name=TurboVNC official RPMs
+baseurl=http://frankie/mirrors-{{ .ContainerName }}/TurboVNC
+gpgcheck=1
+gpgkey=https://sourceforge.net/projects/turbovnc/files/VGL-GPG-KEY
+       https://sourceforge.net/projects/turbovnc/files/VGL-GPG-KEY-1024
+enabled=1
+exclude=turbovnc-*.*.9[0-9]-*
+
+[VirtualGL]
+name=VirtualGL official RPMs
+baseurl=http://frankie/mirrors-{{ .ContainerName }}/VirtualGL
+gpgcheck=1
+gpgkey=https://sourceforge.net/projects/virtualgl/files/VGL-GPG-KEY
+       https://sourceforge.net/projects/virtualgl/files/VGL-GPG-KEY-1024
+enabled=1
+exclude=VirtualGL-*.*.9[0-9]-*
+
+################################################################################
+# OpenZFS upstream repo mirrors-{{ .ContainerName }}.
+[zfs-kmod]
+name=ZFS on Linux for EL8 - kmod
+baseurl=http://frankie/mirrors-{{ .ContainerName }}/zfs-kmod
+enabled=1
+metadata_expire=7d
+gpgcheck=1
+gpgkey=http://frankie/rpm-gpg/RPM-GPG-KEY-zfsonlinux
+
+

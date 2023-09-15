@@ -1,0 +1,11 @@
+[Unit]
+Description=Installs/configures additional packages not included in the provisioned image.
+After=systemd-udev-settle.service remote-fs.target local-fs.target network.target
+Before=slurmd.service
+
+[Service]
+ExecStart=/warewulf/sbin/service.warewulf-overlay-dnf
+Type=oneshot
+
+[Install]
+WantedBy=multi-user.target graphical.target
