@@ -1,0 +1,92 @@
+#!/usr/bin/env python3
+
+# Author: griznog
+# Purpose: Configure/setup dnf and install additional packages based on node
+#          role as defined by {{ .Tags.role }}
+
+import os, os.path, sys, subprocess, socket
+import yaml, json
+
+# Define some locations of interest
+logfile_path = '/tmp/warewulf-overlay-packages.log'
+pkgconfig_file_path = '/warewulf/etc/config-dnf/packages.yaml'
+helpers_path = '/warewulf/etc/config-dnf/helpers.d'
+
+# Supplied via WW template
+dnf_roles = "{{ .Tags.dnf_roles }}".split(',')
+
+# Read/parse config to get the configured overlays for this node.
+def read_config(config_file):
+    # Read node config file
+    with open(config_file) as f:
+        config_data = yaml.load(f)
+    return config_data
+
+# Wrapper for calling dnf
+def dnf_install(packages):
+    status_counter = 0
+    status, output = subprocess.getstatusoutput('dnf -y --quiet install %s' % ' '.join(packages))
+    if status > 0:
+        # If installing as a group failed, retry one by one to identify the probelm package. 
+        for package in packages:
+            status, output = subprocess.getstatusoutput('dnf -y --quiet --skip-broken install %s' % package)
+            if status > 0:
+                status_counter += int(status)
+                print("Error installing %s" % package)
+    return status_counter
+
+# Wrapper for calling helpers.
+def dnf_helper(script):
+    return subprocess.getstatusoutput(script)
+
+# Main
+if __name__ == '__main__':
+    
+    # Read our configs.
+    pkgconfig = read_config(pkgconfig_file_path)
+
+    # Collect the list of helpers, if any. Needs to be an executable file we can run with subprocess.getstatusoutput()
+    helpers = os.listdir(helpers_path)
+    helpers = [ f for f in helpers if os.path.isfile(helpers_path + '/' + f) and os.access(helpers_path + '/' + f, os.X_OK) ]
+
+    # Get short hostname.
+    host = socket.gethostname().split('.')[0]
+    
+    groups = []
+    for role in dnf_roles:
+        try:
+            groups.extend(pkgconfig['roles'][role])
+        except KeyError:
+            print("Role %s not found in available roles: %s" % (role, ','.join(pkgconfig['roles'].keys())))
+            continue
+
+    # Make list a unique list.
+    groups = list(set(groups))
+
+    globalstatus = 0
+
+    for helper in helpers:
+        status, output = dnf_helper(helpers_path + '/' + helper)
+        globalstatus += int(status)
+        if status > 0:
+            print("Error running helper: %s" % helpers_path + '/' + helper)
+            print(output)
+        else:
+            print("Successfuly ran helper: %s" % helpers_path + '/' + helper)
+
+    for group in groups:
+        status = dnf_install(pkgconfig['groups'][group])
+        globalstatus += int(status)
+        if status > 0:
+            print("Error installing group %s." % group)
+            print(output)
+        else:
+            print("Group %s installed." % group)
+
+    # Create a file to use in the NHC check for success.
+    with open("/warewulf/var/state/config-dnf.status", 'w') as f:
+        if globalstatus == 0:
+            f.write('success\n')
+        else:
+            f.write('failure\n')
+
